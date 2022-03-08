@@ -1,9 +1,9 @@
 # 50.037 SUTDBlockU BlockChain Dapp Project 
 
 ## Team Members:
-Gabriel
-Shan Kai
-Xin Yi
+Gabriel </br>
+Shan Kai </br>
+Xin Yi </br>
 Jing Sen
 
 ## Description:
