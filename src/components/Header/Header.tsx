@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FunctionComponent } from "react";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import Text from "../Text/Text";
 import { ReactComponent as MenuIcon } from '../../assets/menu-icon.svg'
 import useCheckMobileScreen from "./useCheckMobileScreen";
+import { Context } from "../../App";
 
 
 interface HeaderProps {
@@ -16,6 +17,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
     const isMobile = useCheckMobileScreen()
     const [isExpanded, setIsExpanded] = useState(false)
 
+    const value = useContext(Context)
     const toggleExpanded = () => {
         setIsExpanded(!isExpanded)
     }
@@ -27,8 +29,8 @@ const Header: FunctionComponent<HeaderProps> = () => {
             </Link>
             <input className="w-3/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2" placeholder="Search..." />
             <Link to="/account">
-                <Button>
-                    My Account
+                <Button style={{textOverflow:'ellipsis'}}>
+                    {value}
                 </Button>
                 </Link>
         </div>
