@@ -10,4 +10,7 @@
   
 .background{
     background:linear-gradient(113.49deg, #984D38 -30.3%, #181E41 58.12%);
-}
+    background-size: cover;
+    height: auto;
+    min-height: 100vh;
+  }
