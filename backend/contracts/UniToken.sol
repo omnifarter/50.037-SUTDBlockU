@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract UniToken is ERC721Enumerable{
-    // structure of metadata stored on the chain
+    // Structure of metadata stored on the chain
     struct UniNFT {
         string name;
         string description;
@@ -57,6 +57,8 @@ contract UniToken is ERC721Enumerable{
             }
         }
         return true;
-    } 
+    }
+
+
 }
 
