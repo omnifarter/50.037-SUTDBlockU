@@ -40,7 +40,7 @@ contract UniMarketplace {
 
 
     event ItemListedSuccessfully(uint256 newItemId, uint256 tokenId, uint256 price);
-    event itemSold(uint256 listingId, address buyer, uint256 price);
+    event ItemSold(uint256 listingId, address buyer, uint256 price);
 
     // List owned NFT with price and tokenId passed from frontend
     function list(uint256 tokenId, uint256 price) 
@@ -78,7 +78,9 @@ contract UniMarketplace {
         address seller = itemsListed[listingId].seller;
         uint256 price = itemsListed[listingId].price;
         
-        require(msg.value >= price, "Balance not enough");
+        // I think this function calls the metamask (adapted from https://github.com/ethereum-boilerplate/ethereum-nft-marketplace-boilerplate/blob/main/src/contracts/marketplaceBoilerplate.sol)
+        // Need to test on frontend
+        require(msg.value == price, "Please submit the asking price in order to complete the purchase");
 
         // Set the sold variable in the itemsListed array to true
         itemsListed[listingId].sold = true;
@@ -92,7 +94,7 @@ contract UniMarketplace {
         // Call the tranfer function from UniToken
         _uniToken.transferFrom(seller, msg.sender, tokenId);
 
-        emit itemSold(listingId, msg.sender, price);
+        emit ItemSold(listingId, msg.sender, price);
     }
 
 }
