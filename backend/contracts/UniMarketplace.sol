@@ -114,14 +114,14 @@ contract UniMarketplace {
         NFT[] memory hi = new NFT[](1);
         // Member storage member = members[i];
         // id[i] = member;
-        hi[0] = (NFT("hi", "bye", "url", msg.sender, "hash", "date"));
+        hi[0] = (NFT(0,"hi", "bye", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Mallard2.jpg/440px-Mallard2.jpg", msg.sender,msg.sender, "hash", "date",false));
         return hi;
     }
 
     function getUserNFTs() public view returns(NFT[] memory){
         //TODO: Get all NFTs owned by user, including if NFT is listed or not
         NFT[] memory hi = new NFT[](1);
-        hi[0] = (NFT("hi", "bye", "url", msg.sender, "hash", "date"));
+        hi[0] = (NFT(0,"hi", "bye", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Mallard2.jpg/440px-Mallard2.jpg", msg.sender,msg.sender, "hash", "date",false));
         return hi;
     }
 }

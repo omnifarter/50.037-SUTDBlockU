@@ -63,9 +63,9 @@ contract UniToken is ERC721Enumerable{
         return true;
     }
 
-    // Set new owner
-    function setNewOwner(address memory owner) public {
-        //TODO: Set new owner
-    }
+    // // Set new owner
+    // function setNewOwner(address memory owner) public {
+    //     //TODO: Set new owner
+    // }
 }
 

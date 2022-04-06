@@ -21,7 +21,7 @@ const Home: FunctionComponent<HomeProps> = () => {
     setLoading(false);
   };
   useEffect(() => {
-    onLoad();
+    contextData.marketplaceContract && onLoad();
   }, [contextData]);
   return (
     <div className="flex flex-col h-screen w-full items-center background">
@@ -35,7 +35,7 @@ const Home: FunctionComponent<HomeProps> = () => {
       >
         {loading == false &&
           NFTs.map((NFT) => {
-            return <NFTHomeCard NFT={NFT} />;
+            return <NFTHomeCard NFT={NFT} key={NFT.id} />;
           })}
       </div>
     </div>

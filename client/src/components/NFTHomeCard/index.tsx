@@ -9,7 +9,7 @@ interface NFTHomeCardProps {
 const NFTHomeCard: FunctionComponent<NFTHomeCardProps> = (props:NFTHomeCardProps) => {
     return (
         <div className="card px-5 py-5">
-            <img src={props.NFT.imgUrl} style={{height:'240px',width:'220px',objectFit:"cover"}} />
+            <img src={props.NFT.imgUrl} style={{height:'240px',width:'220px',objectFit:"cover",margin:'auto'}} className='rounded-md' />
             <p className="text-gray-400 text-sm">{props.NFT.creator}</p>
             <p className="text-white">{props.NFT.name}</p>
             <Button style={{width:'100%'}}>Buy now</Button>

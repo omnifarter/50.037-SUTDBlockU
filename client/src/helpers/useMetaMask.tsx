@@ -36,27 +36,25 @@ const useMetaMask = () => {
 
     const signer = provider.getSigner();
     setMetaAddress(await signer.getAddress());
-    await createUniTokenContract();
-    await createMarketPlaceContract();
+    await createUniTokenContract(signer);
+    await createMarketPlaceContract(signer);
   };
 
-  const createUniTokenContract = async () => {
+  const createUniTokenContract = async (signer:any) => {
     let uniTokenContract = new ethers.Contract(
       UNI_TOKEN_ADDRESS,
       UniToken.abi,
-      provider
+      signer
     );
-    uniTokenContract = await uniTokenContract.deployed();
 
     setUniTokenContract(uniTokenContract);
   };
-  const createMarketPlaceContract = async () => {
+  const createMarketPlaceContract = async (signer:any) => {
     let marketplaceToken = new ethers.Contract(
       ART_MARKETPLACE_ADDRESS,
       Marketplace.abi,
-      provider
+      signer
     );
-    marketplaceToken = await marketplaceToken.deployed();
     setMarketplaceContract(marketplaceToken);
   };
 
