@@ -6,10 +6,12 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 contract UniToken is ERC721Enumerable{
     // Structure of metadata stored on the chain
     struct UniNFT {
+        uint256 id;
         string name;
         string description;
         string imgUrl;
         address creator;
+        address owner;
         string imgHash;
         string createdAt;
     }
@@ -35,10 +37,12 @@ contract UniToken is ERC721Enumerable{
 
         // Assign metadata to the tokenId
         mintedNFTs[tokenId] = UniNFT({
+            id: tokenId,
             name: name,
             description: description,
             imgUrl: imgUrl,
             creator: msg.sender,
+            owner: msg.sender,
             imgHash: imgHash,
             createdAt: createdAt
         });
@@ -59,6 +63,9 @@ contract UniToken is ERC721Enumerable{
         return true;
     }
 
-
+    // Set new owner
+    function setNewOwner(address memory owner) public {
+        //TODO: Set new owner
+    }
 }
 

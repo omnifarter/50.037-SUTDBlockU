@@ -44,7 +44,7 @@ contract UniMarketplace {
 
     // List owned NFT with price and tokenId passed from frontend
     function list(uint256 tokenId, uint256 price) 
-
+    IsItemOwner(tokenId)
     external 
     returns (uint256){
         require(!isListed[tokenId], "Item already listed on marketplace");
@@ -97,4 +97,31 @@ contract UniMarketplace {
         emit ItemSold(listingId, msg.sender, price);
     }
 
+    struct NFT {
+        uint256 id;
+        string name;
+        string description;
+        string imgUrl;
+        address creator;
+        address owner;
+        string imgHash;
+        string createdAt;
+        bool listed; // add true/false if it is listed
+    }
+
+    function getAllNFTs() public view returns(NFT[] memory){
+        //TODO: Return all unsold listed NFTs
+        NFT[] memory hi = new NFT[](1);
+        // Member storage member = members[i];
+        // id[i] = member;
+        hi[0] = (NFT("hi", "bye", "url", msg.sender, "hash", "date"));
+        return hi;
+    }
+
+    function getUserNFTs() public view returns(NFT[] memory){
+        //TODO: Get all NFTs owned by user, including if NFT is listed or not
+        NFT[] memory hi = new NFT[](1);
+        hi[0] = (NFT("hi", "bye", "url", msg.sender, "hash", "date"));
+        return hi;
+    }
 }
