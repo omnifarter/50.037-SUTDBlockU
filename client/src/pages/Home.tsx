@@ -15,7 +15,8 @@ const Home: FunctionComponent<HomeProps> = () => {
   const [loading, setLoading] = useState(true);
   const onLoad = async () => {
     const allNFTs = await getAllNFTs(
-      contextData.marketplaceContract as ethers.Contract
+      contextData.marketplaceContract as ethers.Contract,
+      contextData.uniTokenContract as ethers.Contract
     );
     setNFTs(allNFTs);
     setLoading(false);
