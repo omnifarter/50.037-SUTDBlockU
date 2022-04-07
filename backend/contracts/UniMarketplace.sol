@@ -102,7 +102,7 @@ contract UniMarketplace {
         emit ItemSold(listingId, msg.sender, price);
     }
 
-    // 
+    // returns all unsold listed items
     function getAllNFTs() public view returns(ListedItem[] memory){
 
         uint256 num = 0;
