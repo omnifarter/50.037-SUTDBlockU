@@ -15,9 +15,9 @@ contract UniMarketplace {
     struct ListedItem {
         uint256 listingId; // Index of listed item used to track selling status of a particular listing
         uint256 tokenId; 
+        address seller;
         uint256 price; // Price set by seller
-        address seller; 
-        bool sold; // Track if NFT is sold for frontend filtering & to be set to true once item is sold
+        bool sold; 
     }
     
     // Array to store all listed tokens and their statuses
@@ -38,6 +38,11 @@ contract UniMarketplace {
         _;
     }
 
+    // Function modifier to check if item is already listed on marketplace
+    modifier IsNotListed(uint256 tokenId) {
+        require(!isListed[tokenId], "Item already listed on marketplace");
+        _;
+    }
 
     event ItemListedSuccessfully(uint256 newItemId, uint256 tokenId, uint256 price);
     event ItemSold(uint256 listingId, address buyer, uint256 price);
@@ -45,10 +50,9 @@ contract UniMarketplace {
     // List owned NFT with price and tokenId passed from frontend
     function list(uint256 tokenId, uint256 price) 
     IsItemOwner(tokenId)
+    IsNotListed(tokenId)
     external 
     returns (uint256){
-        require(!isListed[tokenId], "Item already listed on marketplace");
-
         uint256 listingId = itemsListed.length;
 
         // Add new listed item into itemsListed array
@@ -93,35 +97,61 @@ contract UniMarketplace {
 
         // Call the tranfer function from UniToken
         _uniToken.transferFrom(seller, msg.sender, tokenId);
+        _uniToken.setOwner(msg.sender, tokenId);
 
         emit ItemSold(listingId, msg.sender, price);
     }
 
-    struct NFT {
-        uint256 id;
-        string name;
-        string description;
-        string imgUrl;
-        address creator;
-        address owner;
-        string imgHash;
-        string createdAt;
-        bool listed; // add true/false if it is listed
+    // 
+    function getAllNFTs() public view returns(ListedItem[] memory){
+
+        uint256 num = 0;
+
+        for (uint i = 0; i < itemsListed.length; i++) {
+            if (!itemsListed[i].sold) {
+                num++;
+            }
+        }
+
+        ListedItem[] memory listedNFTs = new ListedItem[](num);
+        uint256 j = 0;
+
+        for (uint i = 0; i < itemsListed.length; i++) {
+            if (!itemsListed[i].sold) {
+                listedNFTs[j] = itemsListed[i];
+                j++;
+            }
+        }
+        return listedNFTs;
     }
 
-    function getAllNFTs() public view returns(NFT[] memory){
-        //TODO: Return all unsold listed NFTs
-        NFT[] memory hi = new NFT[](1);
-        // Member storage member = members[i];
-        // id[i] = member;
-        hi[0] = (NFT(0,"hi", "bye", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Mallard2.jpg/440px-Mallard2.jpg", msg.sender,msg.sender, "hash", "date",false));
-        return hi;
+    struct UserNFT {
+        uint256 tokenId;
+        bool listed;
     }
 
-    function getUserNFTs() public view returns(NFT[] memory){
-        //TODO: Get all NFTs owned by user, including if NFT is listed or not
-        NFT[] memory hi = new NFT[](1);
-        hi[0] = (NFT(0,"hi", "bye", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Mallard2.jpg/440px-Mallard2.jpg", msg.sender,msg.sender, "hash", "date",false));
-        return hi;
+    function getUserNFTs() public view returns(UserNFT[] memory) {
+
+        uint256 totalTokens = _uniToken.getNumTokens();
+
+        uint256 num = 0;
+
+        for (uint i = 0; i < totalTokens; i++) {
+            if (_uniToken.ownerOf(i) == msg.sender) {
+                num++;
+            }
+        }
+
+        UserNFT[] memory userNFTs = new UserNFT[](num);
+        uint256 j = 0;
+
+        for (uint i = 0; i < totalTokens; i++) {
+            if (_uniToken.ownerOf(i) == msg.sender) {
+                userNFTs[j] = (UserNFT(i, isListed[i]));
+                j++;
+            }
+        }
+
+        return userNFTs;
     }
 }

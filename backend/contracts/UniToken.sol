@@ -17,9 +17,15 @@ contract UniToken is ERC721Enumerable{
     }
 
     // tokenIds to UniNFT metadata
-    mapping (uint256 => UniNFT) private mintedNFTs;
+    mapping (uint256 => UniNFT) public mintedNFTs;
 
     constructor() ERC721("UniToken", "UTN") {}
+
+    event Minted (
+        uint256 tokenId,
+        string name,
+        string createdAt
+    );
 
     // Minting function that assigns the new token metadata passed from frontend to a tokenId.
     // Minted token is assigned to the address of the caller.
@@ -49,6 +55,9 @@ contract UniToken is ERC721Enumerable{
 
         _mint(msg.sender, tokenId);
 
+        // Emit event
+        emit Minted(tokenId, name, createdAt);
+
         return tokenId;
     }
 
@@ -63,9 +72,16 @@ contract UniToken is ERC721Enumerable{
         return true;
     }
 
-    // // Set new owner
-    // function setNewOwner(address memory owner) public {
-    //     //TODO: Set new owner
-    // }
+    function setOwner(address owner, uint256 tokenId) external {
+        mintedNFTs[tokenId].owner = owner;
+    }
+
+    function getTokenData(uint256 tokenId) public view returns(UniNFT memory) {
+        return mintedNFTs[tokenId];
+    }
+
+    function getNumTokens() public view returns(uint256) {
+        return totalSupply();
+    }
 }
 
