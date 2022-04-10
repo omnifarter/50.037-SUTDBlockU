@@ -14,10 +14,27 @@ const Home: FunctionComponent<HomeProps> = () => {
   const [NFTs, setNFTs] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const onLoad = async () => {
+    // setNFTs([
+    //   {
+    //     id: "0",
+    //     name: "Apes together Stronk",
+    //     description:
+    //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    //     imgUrl:
+    //       "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/in/wp-content/uploads/2022/03/monkey-g412399084_1280.jpg",
+    //     creator: "Sgt TSK",
+    //     owner: "Sgt TSK",
+    //     imgHash: "HASH",
+    //     createdAt: new Date().toString(),
+    //     listed: true,
+    //     price: 12,
+    //   } as NFT,
+    // ]);
     const allNFTs = await getAllNFTs(
       contextData.marketplaceContract as ethers.Contract,
       contextData.uniTokenContract as ethers.Contract
     );
+    console.log(allNFTs);
     setNFTs(allNFTs);
     setLoading(false);
   };
@@ -28,7 +45,7 @@ const Home: FunctionComponent<HomeProps> = () => {
     <div className="flex flex-col h-screen w-full items-center background">
       <Header />
       <Text variant="h1" className="p-4">
-        This is the home page!!
+        NFTs for everyone!
       </Text>
       <div
         className="flex flex-wrap flex-row self-center justify-between"

@@ -144,7 +144,7 @@ contract UniMarketplace {
 
         UserNFT[] memory userNFTs = new UserNFT[](num);
         uint256 j = 0;
-
+        // TODO: This function neds to return listing price somehow also
         for (uint i = 0; i < totalTokens; i++) {
             if (_uniToken.ownerOf(i) == msg.sender) {
                 userNFTs[j] = (UserNFT(i, isListed[i]));

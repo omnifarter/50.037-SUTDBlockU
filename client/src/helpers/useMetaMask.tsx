@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { ART_MARKETPLACE_ADDRESS, UNI_TOKEN_ADDRESS } from "./constants";
+import { UNI_MARKETPLACE_ADDRESS, UNI_TOKEN_ADDRESS } from "./constants";
 //@ts-ignore
 import UniToken from "../abis/UniToken.json";
 //@ts-ignore
@@ -40,7 +40,7 @@ const useMetaMask = () => {
     await createMarketPlaceContract(signer);
   };
 
-  const createUniTokenContract = async (signer:any) => {
+  const createUniTokenContract = async (signer: any) => {
     let uniTokenContract = new ethers.Contract(
       UNI_TOKEN_ADDRESS,
       UniToken.abi,
@@ -49,9 +49,9 @@ const useMetaMask = () => {
 
     setUniTokenContract(uniTokenContract);
   };
-  const createMarketPlaceContract = async (signer:any) => {
+  const createMarketPlaceContract = async (signer: any) => {
     let marketplaceToken = new ethers.Contract(
-      ART_MARKETPLACE_ADDRESS,
+      UNI_MARKETPLACE_ADDRESS,
       Marketplace.abi,
       signer
     );
