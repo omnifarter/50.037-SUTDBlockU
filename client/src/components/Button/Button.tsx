@@ -6,15 +6,16 @@ interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes
 }
  
 const Button: FunctionComponent<ButtonProps> = (props:ButtonProps) => {
-    if(props.variant === "Secondary") {
+    const {className, style,variant, ...others} = props
+    if(variant === "Secondary") {
         return(
-            <SecondaryButton color="violet" size='md' variant="outline" style={props.wFull ? {width:'100%'}:{}}>
+            <SecondaryButton color="violet" size='md' variant="outline" style={props.wFull ? {width:'100%'}:{}} className={className}>
                 {props.children}
             </SecondaryButton>
         )
     } else {
         return (
-            <button className={`flex justify-center p-2 px-4 bg-violet-600 rounded-md text-white shadow-lg ${props.className}`} style={props.style} >
+            <button className={`flex justify-center p-2 px-4 bg-violet-600 rounded-md text-white shadow-lg ${className} ${props.wFull ? 'w-full': ''}`} style={{height:'42px',...style}} {...others} >
                 {props.children}
             </button>
         );
