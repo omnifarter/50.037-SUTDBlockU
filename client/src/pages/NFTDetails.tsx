@@ -2,7 +2,7 @@ import { LoadingOverlay, TextInput } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { ethers } from "ethers";
 import { FunctionComponent, useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../components/Button/Button";
 import Header from "../components/Header/Header";
 import Text from "../components/Text/Text";
@@ -12,11 +12,12 @@ import { Context } from "../helpers/useMetaMask";
 interface NFTDetailsProps {}
 
 const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
-  const { id } = useParams();
+  const { id, listingId } = useParams();
   const contextData = useContext(Context);
   const [NFT, setNFT] = useState<NFT>();
   const [loading, setLoading] = useState(true);
   const [price, setPrice] = useState(0);
+  const navigate = useNavigate();
 
   const getNFT = async () => {
     const nft = await getNFTDetails(
@@ -32,18 +33,20 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
   }, []);
 
   const onClickList = async () => {
-    await listNFT(
+    const success = await listNFT(
       contextData.marketplaceContract as ethers.Contract,
       id as string,
       price.toString()
     );
-    //TODO: notify user that listing is successful
+    if (success) {
+      navigate("/");
+    }
   };
 
   const onClickBuy = async () => {
     await buyNFT(
       contextData.marketplaceContract as ethers.Contract,
-      id as string // TODO: Should pass in listingId here instead!
+      listingId as string // TODO: Should pass in listingId here instead!
     );
     //TODO: notify user that buying is successful
   };
@@ -83,7 +86,7 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
             {NFT?.createdAt}
           </Text>
         </div>
-        {!NFT?.listed ? (
+        {!listingId ? (
           <div className="mt-5 flex items-end">
             <TextInput
               label="List Price"

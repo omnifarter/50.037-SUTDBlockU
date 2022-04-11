@@ -6,10 +6,8 @@ import Text from "../Text/Text";
 import { ReactComponent as MenuIcon } from "../../assets/menu-icon.svg";
 import useCheckMobileScreen from "./useCheckMobileScreen";
 import { Context } from "../../helpers/useMetaMask";
+import { truncateAddress } from "../../helpers/api";
 
-const truncateAddress = (address: string) => {
-  return `${address.slice(0, 7)}...${address.slice(address.length - 7)}`;
-};
 interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {

@@ -35,6 +35,10 @@ export type MintNFT = {
 //     price: string;
 // }
 
+export const truncateAddress = (address: string) => {
+  return `${address.slice(0, 7)}...${address.slice(address.length - 7)}`;
+};
+
 export const getAllNFTs = async (
   contract: ethers.Contract,
   tokenContract: ethers.Contract
@@ -68,31 +72,36 @@ export const getAllNFTs = async (
 };
 
 export const mintNFT = async (contract: ethers.Contract, nft: MintNFT) => {
-  //TODO: upload to IPFS and pass url to mint function in contract
-  //TODO: listen on event, using provider.on()
-
-  /* Create an instance of the client */
   console.log("this is uploaded", nft);
-  await contract.mint(
-    nft.name,
-    nft.description,
-    nft.imgUrl,
-    nft.imgHash,
-    new Date().toString()
-  );
 
-  // Listen to Minted event
-  await contract.on(
-    "Minted",
-    (tokenId: number, name: string, createdAt: string) => {
-      // Call function to display toast
-      showNotification({
-        title: `${name} minted successfully!`,
-        message: `Token ID: ${tokenId}. Created at: ${createdAt}.`,
-      });
-    }
-  );
-  return true;
+  const date = new Date().toString();
+
+  try {
+    await contract.mint(
+      nft.name,
+      nft.description,
+      nft.imgUrl,
+      nft.imgHash,
+      date
+    );
+  } catch (err) {
+    showNotification({
+      title: "Minting unsuccessful!",
+      message: "Image might already be uploaded.",
+      color: "red",
+    });
+    return false;
+  }
+
+  contract.on("Minted", (tokenId: number, name: string, createdAt: string) => {
+    showNotification({
+      title: `${nft.name} minted successfully!`,
+      message: `Created at: ${date}.`,
+    });
+    return true;
+  });
+
+  console.log("minted");
 };
 
 export const uploadToIPFS = async (
@@ -128,17 +137,32 @@ export const listNFT = async (
   price: string
 ) => {
   //TODO: link to listNFT contract
-  await contract.list(nftTokenId, price); //TODO: need to pass in
-  await contract.on(
+  try {
+    await contract.list(nftTokenId, price);
+    showNotification({
+      title: "We are processing your listing",
+      message: "Please wait for the confirmation",
+      loading: true,
+    });
+  } catch {
+    showNotification({
+      title: "Token failed to list!",
+      message: "Token might already be listed!",
+      color: "red",
+    });
+    return false;
+  }
+  contract.on(
     "ItemListedSuccessfully",
     (listingId: number, tokenId: number, price: number) => {
       showNotification({
         title: `Token Id ${tokenId} listed successfully!`,
         message: `Price: ${price} Listing Id: ${listingId}`,
+        color: "green",
       });
+      return true;
     }
   );
-  return true;
 };
 
 export const buyNFT = async (contract: ethers.Contract, listingId: string) => {
@@ -172,7 +196,7 @@ export const getUserNFTs = async (
     })
   );
 
-  console.log("Called UserNFTs");
+  console.log("Called UserNFTs" + userNFTsWithMetaData);
   return userNFTsWithMetaData;
 };
 
@@ -181,18 +205,4 @@ export const getNFTDetails = async (
   tokenId: string
 ) => {
   return await contract.getTokenData(tokenId);
-  // return {
-  //   id: "0",
-  //   name: "Apes together Stronk",
-  //   description:
-  //     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  //   imgUrl:
-  //     "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/in/wp-content/uploads/2022/03/monkey-g412399084_1280.jpg",
-  //   creator: "Sgt TSK",
-  //   owner: "Sgt TSK",
-  //   imgHash: "HASH",
-  //   createdAt: new Date().toString(),
-  //   listed: true,
-  //   price: 12,
-  // } as NFT;
 };

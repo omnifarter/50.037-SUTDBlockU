@@ -23,8 +23,8 @@ contract UniMarketplace {
     // Array to store all listed tokens and their statuses
     ListedItem[] public itemsListed;
 
-    // Mapping to check if tokenId is listed on the marketplace and can be bought 
-    mapping(uint256 => bool) public isListed;
+    // Mapping to check if tokenId is listed on the marketplace
+    mapping(uint256 => uint256) public isListed;
     
     // Function modifier to check if lister has the token to prevent hackers from listing other peoples' tokens
     modifier IsItemOwner(uint256 tokenId){

@@ -1,5 +1,6 @@
 import { FunctionComponent } from "react";
-import { buyNFT, NFT } from "../../helpers/api";
+import { useNavigate } from "react-router-dom";
+import { buyNFT, NFT, truncateAddress } from "../../helpers/api";
 import Button from "../Button/Button";
 
 interface NFTHomeCardProps {
@@ -9,9 +10,12 @@ interface NFTHomeCardProps {
 const NFTHomeCard: FunctionComponent<NFTHomeCardProps> = (
   props: NFTHomeCardProps
 ) => {
-  //   const buyHandler = () => {
-  //     console.log("buying" + props.NFT.name);
-  //   };
+  const navigate = useNavigate();
+
+  const buyHandler = () => {
+    console.log("buying" + props.NFT.name);
+    navigate(`/${props.NFT.id}/${props.NFT.listingId}`);
+  };
 
   return (
     <div className="card px-5 py-5 ">
@@ -28,8 +32,12 @@ const NFTHomeCard: FunctionComponent<NFTHomeCardProps> = (
       />
       <p className="text-white py-1">{props.NFT.name}</p>
       <p className="text-white">Price: {props.NFT.price?.toString()} ETH</p>
-      <p className="text-gray-300 text-sm">Creator: {props.NFT.creator}</p>
-      <Button style={{ width: "100%", marginTop: "5px" }}>Buy now</Button>
+      <p className="text-gray-300 text-sm">
+        Creator: {truncateAddress(props.NFT.creator)}
+      </p>
+      <Button style={{ width: "100%", marginTop: "5px" }} onClick={buyHandler}>
+        Buy now
+      </Button>
     </div>
   );
 };

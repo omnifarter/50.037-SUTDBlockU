@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { FunctionComponent, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button/Button";
 import Header from "../components/Header/Header";
 import MintForm from "../components/MintForm";
@@ -13,10 +13,18 @@ interface MintProps {}
 const Mint: FunctionComponent<MintProps> = () => {
   const [loading, setLoading] = useState(false);
   const contextData = useContext(Context);
+  const navigate = useNavigate();
+
   const onSubmit = async (nft: MintNFT) => {
     setLoading(true);
-    await mintNFT(contextData.uniTokenContract as ethers.Contract, nft);
+    const success = await mintNFT(
+      contextData.uniTokenContract as ethers.Contract,
+      nft
+    );
     setLoading(false);
+    if (success) {
+      navigate("/account");
+    }
   };
   return (
     <div className="flex flex-col h-screen w-full items-center background">
