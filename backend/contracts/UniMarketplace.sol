@@ -84,6 +84,7 @@ contract UniMarketplace {
         
         // I think this function calls the metamask (adapted from https://github.com/ethereum-boilerplate/ethereum-nft-marketplace-boilerplate/blob/main/src/contracts/marketplaceBoilerplate.sol)
         // Need to test on frontend
+        // An insufficient balance will fail this require
         require(msg.value == price, "Please submit the asking price in order to complete the purchase");
 
         // Set the sold variable in the itemsListed array to true
