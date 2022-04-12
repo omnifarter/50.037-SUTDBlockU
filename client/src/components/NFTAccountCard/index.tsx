@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { NFT } from "../../helpers/api";
 import Button from "../Button/Button";
 import Text from "../Text/Text";
+import dayjs from "dayjs";
+import { ethers } from "ethers";
+var localizedFormat = require("dayjs/plugin/localizedFormat");
+dayjs.extend(localizedFormat);
 
 interface NFTAccountCardProps {
   NFT: NFT;
@@ -31,14 +35,14 @@ const NFTAccountCard: FunctionComponent<NFTAccountCardProps> = (
           </Text>
           <Text variant="h1" className="font-bold text-4xl mt-2">
             {props.NFT.listed
-              ? props.NFT.price?.toString() + " ETH"
+              ? ethers.utils.formatEther(props.NFT.price?.toString() as string) + " ETH"
               : "Not Listed"}
           </Text>
           <Text variant="p" className="text-gray-400 font-bold mt-5">
             Minted on
           </Text>
           <Text variant="p" className="font-bold">
-            {props.NFT.createdAt}
+            {dayjs(props.NFT.createdAt).format("LLL")}
           </Text>
         </div>
       </div>

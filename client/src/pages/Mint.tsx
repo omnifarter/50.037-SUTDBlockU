@@ -17,14 +17,16 @@ const Mint: FunctionComponent<MintProps> = () => {
 
   const onSubmit = async (nft: MintNFT) => {
     setLoading(true);
-    const success = await mintNFT(
+    await mintNFT(
       contextData.uniTokenContract as ethers.Contract,
-      nft
+      nft,
+      callback
     );
     setLoading(false);
-    if (success) {
-      navigate("/account");
-    }
+  };
+
+  const callback = () => {
+    return navigate("/account");
   };
   return (
     <div className="flex flex-col h-screen w-full items-center background">

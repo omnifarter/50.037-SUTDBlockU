@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract UniToken is ERC721Enumerable{
     // Structure of metadata stored on the chain
@@ -67,7 +68,8 @@ contract UniToken is ERC721Enumerable{
         });
 
         _mint(msg.sender, tokenId);
-
+        // setApprovalForAll(address(this), true);
+        
         // Emit event
         emit Minted(tokenId, name, createdAt);
 
@@ -93,18 +95,18 @@ contract UniToken is ERC721Enumerable{
 
     // Function modifier to check if a listed item is still for sale
     modifier IsListed(uint256 tokenId){
-        require(!mintedNFTs[tokenId].listed, "Item is not listed");
+        require(mintedNFTs[tokenId].listed, "Item is not listed");
         _;
     }
 
      // Function modifier to check if item is already listed on marketplace
     modifier IsNotListed(uint256 tokenId) {
-        require(mintedNFTs[tokenId].listed, "Item is listed");
+        require(!mintedNFTs[tokenId].listed, "Item is listed");
         _;
     }
 
     event ItemListedSuccessfully(uint256 tokenId, uint256 price);
-    event ItemBought(address seller, address buyer, uint256 price);    
+    event ItemBought(address seller, string name, uint256 price);    
 
     // List owned NFT with price and tokenId passed from frontend
     function list(uint256 tokenId, uint256 price) 
@@ -127,7 +129,7 @@ contract UniToken is ERC721Enumerable{
         uint256 currentPrice = mintedNFTs[tokenId].price;
 
         // Need to test on frontend
-        require(msg.value == currentPrice, "Please submit the asking price in order to complete the purchase");
+        require(msg.value == currentPrice, Strings.toString(currentPrice));
 
         address seller = mintedNFTs[tokenId].owner;
     
@@ -142,12 +144,12 @@ contract UniToken is ERC721Enumerable{
         mintedNFTs[tokenId].price = 0;
 
         // Call the transfer function from UniToken
-        transferFrom(seller, msg.sender, tokenId);
+        _transfer(seller, msg.sender, tokenId);
 
         // Create transaction item
         transactionHistory.push(Transaction(seller, msg.sender, currentPrice, tokenId));
 
-        emit ItemBought(seller, msg.sender, currentPrice);
+        emit ItemBought(seller, mintedNFTs[tokenId].name, currentPrice);
     }
 
     function getListedNFTs() public view returns (UniNFT[] memory){
@@ -174,7 +176,7 @@ contract UniToken is ERC721Enumerable{
     function getUserNFTs() public view returns (UniNFT[] memory) {
         uint count = 0;
         for (uint i = 0; i < totalSupply(); i++) {
-            if (mintedNFTs[i].owner == msg.sender) {
+            if (ownerOf(i) == msg.sender) {
                 count++;
             }
         }
@@ -183,7 +185,7 @@ contract UniToken is ERC721Enumerable{
         uint j = 0;
 
         for (uint i = 0; i < totalSupply(); i++ ) {
-            if (mintedNFTs[i].owner == msg.sender) {
+            if (ownerOf(i) == msg.sender) {
                 userNFTs[j] = mintedNFTs[i];
                 j++;
             }    

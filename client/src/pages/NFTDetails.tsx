@@ -8,11 +8,14 @@ import Header from "../components/Header/Header";
 import Text from "../components/Text/Text";
 import { buyNFT, getNFTDetails, listNFT, NFT } from "../helpers/api";
 import { Context } from "../helpers/useMetaMask";
+import dayjs from "dayjs";
+var localizedFormat = require("dayjs/plugin/localizedFormat");
+dayjs.extend(localizedFormat);
 
 interface NFTDetailsProps {}
 
 const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
-  const { id, listingId } = useParams();
+  const { id } = useParams();
   const contextData = useContext(Context);
   const [NFT, setNFT] = useState<NFT>();
   const [loading, setLoading] = useState(true);
@@ -29,33 +32,44 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
   };
 
   useEffect(() => {
-    getNFT();
-  }, []);
+    contextData.uniTokenContract && getNFT();
+  }, [contextData]);
 
+  useEffect(() => {
+    console.log(price.toString());
+  }, [price]);
   const onClickList = async () => {
-    const success = await listNFT(
+    console.log(price.toString());
+    await listNFT(
       contextData.uniTokenContract as ethers.Contract,
       id as string,
-      price.toString()
+      price.toString(),
+      callback
     );
-    if (success) {
-      navigate("/");
-    }
   };
 
   const onClickBuy = async () => {
+    console.log(NFT?.price);
     await buyNFT(
       contextData.uniTokenContract as ethers.Contract,
-      listingId as string // TODO: Should pass in listingId here instead!
+      parseInt(NFT?.id as string),
+      //@ts-ignore
+      NFT?.price as ethers.BigNumber,
+      callback
     );
     //TODO: notify user that buying is successful
   };
+
+  const callback = () => {
+    return navigate("/account");
+  };
+
   return (
     <div className="flex flex-col items-center h-screen w-full background">
       <Header />
       <LoadingOverlay visible={loading} />
       <div style={{ width: "820px" }}>
-        <Text variant="h1" className="p-4">
+        <Text variant="h1" className="py-4">
           {NFT?.name}
         </Text>
         <div className="flex">
@@ -77,16 +91,19 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
             Current Listing
           </Text>
           <Text variant="p" className="font-bold ">
-            {NFT?.listed ? NFT.price + " ETH" : "Not Listed"}
+            {NFT?.listed
+              ? ethers.utils.formatEther(NFT?.price?.toString() as string) +
+                " ETH"
+              : "Not Listed"}
           </Text>
           <Text variant="p" className="text-xs text-gray-400 font-bold mt-1">
             Minted on
           </Text>
           <Text variant="p" className="font-bold">
-            {NFT?.createdAt}
+            {dayjs(NFT?.createdAt).format("LLL")}
           </Text>
         </div>
-        {!listingId ? (
+        {!NFT?.listed ? (
           <div className="mt-5 flex items-end">
             <TextInput
               label="List Price"
@@ -102,7 +119,7 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
                 </Text>
               }
               onChange={(evt) => {
-                setPrice(parseInt(evt.target.value));
+                setPrice(parseFloat(evt.target.value));
               }}
               defaultValue={0}
             />

@@ -8,9 +8,11 @@ import useCheckMobileScreen from "./useCheckMobileScreen";
 import { Context } from "../../helpers/useMetaMask";
 import { truncateAddress } from "../../helpers/api";
 
-interface HeaderProps {}
+interface HeaderProps {
+  setFilter?(text: string): void;
+}
 
-const Header: FunctionComponent<HeaderProps> = () => {
+const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
   const isMobile = useCheckMobileScreen();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -45,6 +47,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
         <input
           className="w-3/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2"
           placeholder="Search..."
+          onChange={(e) => props.setFilter && props.setFilter(e.target.value)}
         />
         <Link to="/account">
           <Button>

@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { FunctionComponent } from "react";
 import { useNavigate } from "react-router-dom";
 import { buyNFT, NFT, truncateAddress } from "../../helpers/api";
@@ -13,8 +14,7 @@ const NFTHomeCard: FunctionComponent<NFTHomeCardProps> = (
   const navigate = useNavigate();
 
   const buyHandler = () => {
-    console.log("buying" + props.NFT.name);
-    navigate(`/${props.NFT.id}/${props.NFT.listingId}`);
+    navigate(`/${props.NFT.id}`);
   };
 
   return (
@@ -31,7 +31,7 @@ const NFTHomeCard: FunctionComponent<NFTHomeCardProps> = (
         alt={props.NFT.name}
       />
       <p className="text-white py-1">{props.NFT.name}</p>
-      <p className="text-white">Price: {props.NFT.price?.toString()} ETH</p>
+      <p className="text-white">Price: {ethers.utils.formatEther(props.NFT.price?.toString() as string)} ETH</p>
       <p className="text-gray-300 text-sm">
         Creator: {truncateAddress(props.NFT.creator)}
       </p>

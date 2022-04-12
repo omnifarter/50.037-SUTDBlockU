@@ -5,6 +5,9 @@ import { PROJECT_ID, PROJECT_SECRET } from "./constants";
 import sha256 from "crypto-js/sha256";
 import Utf8 from "crypto-js/enc-utf8";
 import { showNotification } from "@mantine/notifications";
+import dayjs from "dayjs";
+var localizedFormat = require("dayjs/plugin/localizedFormat");
+dayjs.extend(localizedFormat);
 
 export type NFT = {
   id: string;
@@ -41,12 +44,16 @@ export const truncateAddress = (address: string) => {
 
 export const getListedNFTs = async (contract: ethers.Contract) => {
   //TODO: call marketplace contract here...
-  const allListedNFTs = await contract.getAllNFTs();
+  const allListedNFTs = await contract.getListedNFTs();
 
   return allListedNFTs;
 };
 
-export const mintNFT = async (contract: ethers.Contract, nft: MintNFT) => {
+export const mintNFT = async (
+  contract: ethers.Contract,
+  nft: MintNFT,
+  callback: () => void
+) => {
   console.log("this is uploaded", nft);
 
   const date = new Date().toString();
@@ -59,24 +66,25 @@ export const mintNFT = async (contract: ethers.Contract, nft: MintNFT) => {
       nft.imgHash,
       date
     );
+
+    contract.on(
+      "Minted",
+      (tokenId: number, name: string, createdAt: string) => {
+        showNotification({
+          title: `${name} minted successfully!`,
+          message: `Created at: ${dayjs(createdAt).format("LLL")}.`,
+        });
+        callback();
+      }
+    );
   } catch (err) {
     showNotification({
       title: "Minting unsuccessful!",
       message: "Image might already be uploaded.",
       color: "red",
     });
-    return false;
+    callback();
   }
-
-  contract.on("Minted", (tokenId: number, name: string, createdAt: string) => {
-    showNotification({
-      title: `${nft.name} minted successfully!`,
-      message: `Created at: ${date}.`,
-    });
-    return true;
-  });
-
-  console.log("minted");
 };
 
 export const uploadToIPFS = async (
@@ -109,35 +117,63 @@ export const uploadToIPFS = async (
 export const listNFT = async (
   contract: ethers.Contract,
   nftTokenId: string,
-  price: string
+  price: string,
+  callback: () => void
 ) => {
   //TODO: link to listNFT contract
   try {
-    await contract.list(nftTokenId, price);
+    await contract.list(nftTokenId, ethers.utils.parseEther(price));
   } catch {
     showNotification({
       title: "Token failed to list!",
       message: "Token might already be listed!",
       color: "red",
     });
-    return false;
+    callback();
   }
   contract.on(
     "ItemListedSuccessfully",
     (listingId: number, tokenId: number, price: number) => {
       showNotification({
         title: `Token Id ${tokenId} listed successfully!`,
-        message: `Price: ${price} Listing Id: ${listingId}`,
+        message: `Price: ${ethers.utils.parseEther(
+          price.toString()
+        )} Listing Id: ${listingId}`,
         color: "green",
       });
-      return true;
+      callback();
     }
   );
 };
 
-export const buyNFT = async (contract: ethers.Contract, listingId: string) => {
+export const buyNFT = async (
+  contract: ethers.Contract,
+  tokenId: number,
+  price: ethers.BigNumber,
+  callback: () => void
+) => {
   //TODO: link to buyNFT contract
-  return true;
+  const options = { value: price };
+  try {
+    await contract.buyItem(tokenId, options);
+  } catch {
+    showNotification({
+      title: "Failed to buy!",
+      message: "Item might have already been bought.",
+      color: "red",
+    });
+  }
+
+  contract.on("ItemBought", (seller: string, name: string, price: number) => {
+    showNotification({
+      title: `${name} bought successfully!`,
+      message: `Price: ${ethers.utils.parseEther(
+        price.toString()
+      )} Seller: ${seller}`,
+      color: "green",
+    });
+    callback();
+  });
 };
 
 export const getUserNFTs = async (contract: ethers.Contract) => {
