@@ -14,7 +14,18 @@ contract UniToken is ERC721Enumerable{
         address owner;
         string imgHash;
         string createdAt;
+        bool listed;
+        uint256 price;
     }
+
+    struct Transaction {
+        address seller;
+        address buyer;
+        uint256 price;
+        uint256 tokenId;
+    }
+
+    Transaction[] transactionHistory;
 
     // tokenIds to UniNFT metadata
     mapping (uint256 => UniNFT) public mintedNFTs;
@@ -50,7 +61,9 @@ contract UniToken is ERC721Enumerable{
             creator: msg.sender,
             owner: msg.sender,
             imgHash: imgHash,
-            createdAt: createdAt
+            createdAt: createdAt,
+            listed: false,
+            price: 0
         });
 
         _mint(msg.sender, tokenId);
@@ -72,12 +85,98 @@ contract UniToken is ERC721Enumerable{
         return true;
     }
 
-    function setOwner(address owner, uint256 tokenId) external {
-        mintedNFTs[tokenId].owner = owner;
+    // Function modifier to check if lister has the token to prevent hackers from listing other peoples' tokens
+    modifier IsItemOwner(uint256 tokenId){
+        require(ownerOf(tokenId) == msg.sender, "Sender does not own the item");
+        _;
+    }
+
+    // Function modifier to check if a listed item is still for sale
+    modifier IsListed(uint256 tokenId){
+        require(!mintedNFTs[tokenId].listed, "Item is not listed");
+        _;
+    }
+
+     // Function modifier to check if item is already listed on marketplace
+    modifier IsNotListed(uint256 tokenId) {
+        require(mintedNFTs[tokenId].listed, "Item is listed");
+        _;
+    }
+
+    event ItemListedSuccessfully(uint256 tokenId, uint256 price);
+    event ItemBought(address seller, address buyer, uint256 price);    
+
+    // List owned NFT with price and tokenId passed from frontend
+    function list(uint256 tokenId, uint256 price) 
+    IsItemOwner(tokenId)
+    IsNotListed(tokenId)
+    external {
+        mintedNFTs[tokenId].price = price;
+        mintedNFTs[tokenId].listed = true;
+
+        // Emit event to the frontend to update the UI
+        emit ItemListedSuccessfully(tokenId, price);
+    }
+    
+    // Function called to purchase a listed item
+    function buyItem(uint256 tokenId) 
+    IsListed(tokenId)
+    payable 
+    external { 
+
+        uint256 currentPrice = mintedNFTs[tokenId].price;
+
+        // Need to test on frontend
+        require(msg.value == currentPrice, "Please submit the asking price in order to complete the purchase");
+
+        address seller = mintedNFTs[tokenId].owner;
+    
+        // Transfer funds from buyer to seller
+        payable(seller).transfer(currentPrice);
+
+        
+        mintedNFTs[tokenId].owner = msg.sender;
+        // Set listed to false
+        mintedNFTs[tokenId].listed = false;
+        // Reset price to 0
+        mintedNFTs[tokenId].price = 0;
+
+        // Call the transfer function from UniToken
+        transferFrom(seller, msg.sender, tokenId);
+
+        // Create transaction item
+        transactionHistory.push(Transaction(seller, msg.sender, currentPrice, tokenId));
+
+        emit ItemBought(seller, msg.sender, currentPrice);
+    }
+
+    function getListedNFTs() public view returns (UniNFT[] memory){
+        uint count = 0;
+        for (uint i = 0; i < totalSupply(); i++) {
+            if (mintedNFTs[i].listed) {
+                count++;
+            }
+        }
+        
+        UniNFT[] memory listedNFTs = new UniNFT[](count);
+        uint j = 0;
+
+        for (uint i = 0; i < totalSupply(); i++ ) {
+            if (mintedNFTs[i].listed) {
+                listedNFTs[j] = mintedNFTs[i];
+                j++;
+            }    
+        }
+
+        return listedNFTs;
     }
 
     function getTokenData(uint256 tokenId) public view returns(UniNFT memory) {
         return mintedNFTs[tokenId];
+    }
+
+    function getTransactionHistory() public view returns(Transaction[] memory) {
+        return transactionHistory;
     }
 
     function getNumTokens() public view returns(uint256) {
