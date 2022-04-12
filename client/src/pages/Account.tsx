@@ -16,14 +16,13 @@ const Account: FunctionComponent<AccountProps> = () => {
   const [loading, setLoading] = useState(true);
   const onLoad = async () => {
     const allNFTs = await getUserNFTs(
-      contextData.marketplaceContract as ethers.Contract,
       contextData.uniTokenContract as ethers.Contract
     );
     setNFTs(allNFTs);
     setLoading(false);
   };
   useEffect(() => {
-    contextData.marketplaceContract && onLoad();
+    contextData.uniTokenContract && onLoad();
   }, [contextData]);
 
   return (

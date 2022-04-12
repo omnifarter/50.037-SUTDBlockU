@@ -171,6 +171,27 @@ contract UniToken is ERC721Enumerable{
         return listedNFTs;
     }
 
+    function getUserNFTs() public view returns (UniNFT[] memory) {
+        uint count = 0;
+        for (uint i = 0; i < totalSupply(); i++) {
+            if (mintedNFTs[i].owner == msg.sender) {
+                count++;
+            }
+        }
+        
+        UniNFT[] memory userNFTs = new UniNFT[](count);
+        uint j = 0;
+
+        for (uint i = 0; i < totalSupply(); i++ ) {
+            if (mintedNFTs[i].owner == msg.sender) {
+                userNFTs[j] = mintedNFTs[i];
+                j++;
+            }    
+        }
+
+        return userNFTs;
+    }
+
     function getTokenData(uint256 tokenId) public view returns(UniNFT memory) {
         return mintedNFTs[tokenId];
     }

@@ -39,36 +39,11 @@ export const truncateAddress = (address: string) => {
   return `${address.slice(0, 7)}...${address.slice(address.length - 7)}`;
 };
 
-export const getAllNFTs = async (
-  contract: ethers.Contract,
-  tokenContract: ethers.Contract
-) => {
-  var allListedNFTWithMetadata: NFT[] = [];
-
+export const getListedNFTs = async (contract: ethers.Contract) => {
   //TODO: call marketplace contract here...
   const allListedNFTs = await contract.getAllNFTs();
 
-  await Promise.all(
-    allListedNFTs.map(async (listedItem: any) => {
-      // Grab token metadata from uni token contract
-      const tokenData = await tokenContract.getTokenData(listedItem.tokenId);
-      allListedNFTWithMetadata.push({
-        id: listedItem.tokenId,
-        name: tokenData.name,
-        description: tokenData.description,
-        imgUrl: tokenData.imgUrl,
-        creator: tokenData.creator,
-        owner: tokenData.owner,
-        imgHash: tokenData.imgHash,
-        createdAt: tokenData.createdAt,
-        listingId: listedItem.listingId,
-        price: listedItem.price,
-      });
-    })
-  );
-  console.log("HERE");
-
-  return allListedNFTWithMetadata;
+  return allListedNFTs;
 };
 
 export const mintNFT = async (contract: ethers.Contract, nft: MintNFT) => {
@@ -139,11 +114,6 @@ export const listNFT = async (
   //TODO: link to listNFT contract
   try {
     await contract.list(nftTokenId, price);
-    showNotification({
-      title: "We are processing your listing",
-      message: "Please wait for the confirmation",
-      loading: true,
-    });
   } catch {
     showNotification({
       title: "Token failed to list!",
@@ -170,34 +140,9 @@ export const buyNFT = async (contract: ethers.Contract, listingId: string) => {
   return true;
 };
 
-export const getUserNFTs = async (
-  contract: ethers.Contract,
-  tokenContract: ethers.Contract
-) => {
+export const getUserNFTs = async (contract: ethers.Contract) => {
   const userNFTs = await contract.getUserNFTs();
-
-  var userNFTsWithMetaData: any = [];
-
-  await Promise.all(
-    userNFTs.map(async ({ tokenId, listed }: any) => {
-      // Grab token metadata from uni token contract
-      const tokenData = await tokenContract.getTokenData(tokenId);
-      userNFTsWithMetaData.push({
-        id: tokenId,
-        name: tokenData.name,
-        description: tokenData.description,
-        imgUrl: tokenData.imgUrl,
-        creator: tokenData.creator,
-        owner: tokenData.owner,
-        imgHash: tokenData.imgHash,
-        createdAt: tokenData.createdAt,
-        listed,
-      });
-    })
-  );
-
-  console.log("Called UserNFTs" + userNFTsWithMetaData);
-  return userNFTsWithMetaData;
+  return userNFTs;
 };
 
 export const getNFTDetails = async (

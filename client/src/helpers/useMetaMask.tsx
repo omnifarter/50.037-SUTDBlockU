@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { UNI_MARKETPLACE_ADDRESS, UNI_TOKEN_ADDRESS } from "./constants";
+import { UNI_TOKEN_ADDRESS } from "./constants";
 //@ts-ignore
 import UniToken from "../abis/UniToken.json";
-//@ts-ignore
-import Marketplace from "../abis/UniMarketplace.json";
 
 type ContextData = {
   metaAddress?: string;
   uniTokenContract?: ethers.Contract;
-  marketplaceContract?: ethers.Contract;
 };
 export const Context = React.createContext<ContextData>({});
 
@@ -22,8 +19,7 @@ const useMetaMask = () => {
   );
 
   const [uniTokenContract, setUniTokenContract] = useState<ethers.Contract>();
-  const [marketplaceContract, setMarketplaceContract] =
-    useState<ethers.Contract>();
+
   // A Web3Provider wraps a standard Web3 provider, which is
   // what MetaMask injects as window.ethereum into each page
   const initMetaMask = async () => {
@@ -37,7 +33,6 @@ const useMetaMask = () => {
     const signer = provider.getSigner();
     setMetaAddress(await signer.getAddress());
     await createUniTokenContract(signer);
-    await createMarketPlaceContract(signer);
   };
 
   const createUniTokenContract = async (signer: any) => {
@@ -49,20 +44,12 @@ const useMetaMask = () => {
 
     setUniTokenContract(uniTokenContract);
   };
-  const createMarketPlaceContract = async (signer: any) => {
-    let marketplaceToken = new ethers.Contract(
-      UNI_MARKETPLACE_ADDRESS,
-      Marketplace.abi,
-      signer
-    );
-    setMarketplaceContract(marketplaceToken);
-  };
 
   useEffect(() => {
     initMetaMask();
   }, []);
 
-  return { metaAddress, uniTokenContract, marketplaceContract };
+  return { metaAddress, uniTokenContract };
 };
 
 export default useMetaMask;

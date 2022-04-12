@@ -34,7 +34,7 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
 
   const onClickList = async () => {
     const success = await listNFT(
-      contextData.marketplaceContract as ethers.Contract,
+      contextData.uniTokenContract as ethers.Contract,
       id as string,
       price.toString()
     );
@@ -45,7 +45,7 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
 
   const onClickBuy = async () => {
     await buyNFT(
-      contextData.marketplaceContract as ethers.Contract,
+      contextData.uniTokenContract as ethers.Contract,
       listingId as string // TODO: Should pass in listingId here instead!
     );
     //TODO: notify user that buying is successful
