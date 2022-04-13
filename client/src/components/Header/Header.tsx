@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { FunctionComponent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Button from "../Button/Button";
 import Text from "../Text/Text";
 import { ReactComponent as MenuIcon } from "../../assets/menu-icon.svg";
@@ -15,6 +15,7 @@ interface HeaderProps {
 const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
   const isMobile = useCheckMobileScreen();
   const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
 
   const contractData = useContext(Context);
   const toggleExpanded = () => {
@@ -44,11 +45,13 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
             UniBlock
           </Text>
         </Link>
-        <input
-          className="w-3/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2"
-          placeholder="Search..."
-          onChange={(e) => props.setFilter && props.setFilter(e.target.value)}
-        />
+        {location.pathname === "/" ? (
+          <input
+            className="w-3/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2"
+            placeholder="Search..."
+            onChange={(e) => props.setFilter && props.setFilter(e.target.value)}
+          />
+        ) : null}
         <Link to="/account">
           <Button>
             {truncateAddress(contractData.metaAddress as string) ||
