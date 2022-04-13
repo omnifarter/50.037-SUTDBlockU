@@ -33,6 +33,7 @@ const Transactions: FunctionComponent<TransactionProps> = () => {
         {transactions.map((tx: TransactionDetails) => {
           return (
             <Transaction
+              key={tx.tokenId}
               seller={tx.seller}
               buyer={tx.buyer}
               price={ethers.utils.formatEther(tx.price.toString())}
