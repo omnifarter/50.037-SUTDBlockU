@@ -1,12 +1,9 @@
 import { ethers } from "ethers";
 import { FunctionComponent, useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Button from "../components/Button/Button";
 import Header from "../components/Header/Header";
 import NFTHomeCard from "../components/NFTHomeCard";
 import Text from "../components/Text/Text";
 import { getListedNFTs, NFT } from "../helpers/api";
-import listen from "../helpers/listen";
 import { Context } from "../helpers/useMetaMask";
 interface HomeProps {}
 

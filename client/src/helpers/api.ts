@@ -66,13 +66,21 @@ export const mintNFT = async (
       nft.imgHash,
       date
     );
+    showNotification({
+      title: "Mint transaction is loading!",
+      message: "Please be patient.",
+      loading: true,
+    });
 
     contract.on(
       "Minted",
       (tokenId: number, name: string, createdAt: string) => {
         showNotification({
           title: `${name} minted successfully!`,
-          message: `Created at: ${dayjs(createdAt).format("LLL")}.`,
+          message: `Created at: ${dayjs(createdAt).format(
+            "LLL"
+          )}. Token Id: ${tokenId}`,
+          color: "green",
         });
         callback();
       }
@@ -123,6 +131,24 @@ export const listNFT = async (
   //TODO: link to listNFT contract
   try {
     await contract.list(nftTokenId, ethers.utils.parseEther(price));
+    showNotification({
+      title: "List transaction is loading!",
+      message: "Please be patient.",
+      loading: true,
+    });
+    contract.on(
+      "ItemListedSuccessfully",
+      (listingId: number, tokenId: number, price: number) => {
+        showNotification({
+          title: `Token Id ${tokenId} listed successfully!`,
+          message: `Price: ${ethers.utils.parseEther(
+            price.toString()
+          )} Listing Id: ${listingId}`,
+          color: "green",
+        });
+        callback();
+      }
+    );
   } catch {
     showNotification({
       title: "Token failed to list!",
@@ -131,19 +157,6 @@ export const listNFT = async (
     });
     callback();
   }
-  contract.on(
-    "ItemListedSuccessfully",
-    (listingId: number, tokenId: number, price: number) => {
-      showNotification({
-        title: `Token Id ${tokenId} listed successfully!`,
-        message: `Price: ${ethers.utils.parseEther(
-          price.toString()
-        )} Listing Id: ${listingId}`,
-        color: "green",
-      });
-      callback();
-    }
-  );
 };
 
 export const buyNFT = async (
@@ -156,6 +169,21 @@ export const buyNFT = async (
   const options = { value: price };
   try {
     await contract.buyItem(tokenId, options);
+    showNotification({
+      title: "Buy transaction is loading!",
+      message: "Please be patient.",
+      loading: true,
+    });
+    contract.on("ItemBought", (seller: string, name: string, price: number) => {
+      showNotification({
+        title: `${name} bought successfully!`,
+        message: `Price: ${ethers.utils.parseEther(
+          price.toString()
+        )} Seller: ${seller}`,
+        color: "green",
+      });
+      callback();
+    });
   } catch {
     showNotification({
       title: "Failed to buy!",
@@ -163,17 +191,6 @@ export const buyNFT = async (
       color: "red",
     });
   }
-
-  contract.on("ItemBought", (seller: string, name: string, price: number) => {
-    showNotification({
-      title: `${name} bought successfully!`,
-      message: `Price: ${ethers.utils.parseEther(
-        price.toString()
-      )} Seller: ${seller}`,
-      color: "green",
-    });
-    callback();
-  });
 };
 
 export const getUserNFTs = async (contract: ethers.Contract) => {
