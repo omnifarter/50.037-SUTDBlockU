@@ -45,13 +45,21 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
             UniBlock
           </Text>
         </Link>
-        {location.pathname === "/" ? (
+
+        {props.setFilter ? (
           <input
             className="w-3/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2"
             placeholder="Search..."
             onChange={(e) => props.setFilter && props.setFilter(e.target.value)}
           />
         ) : null}
+
+        {location.pathname !== "/transactions" ? (
+          <Link to="/transactions" className="flex row">
+            <Button>Transactions</Button>
+          </Link>
+        ) : null}
+
         <Link to="/account">
           <Button>
             {truncateAddress(contractData.metaAddress as string) ||

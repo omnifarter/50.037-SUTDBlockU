@@ -6,6 +6,7 @@ import Account from "./pages/Account";
 import Home from "./pages/Home";
 import Mint from "./pages/Mint";
 import NFTDetails from "./pages/NFTDetails";
+import Transactions from "./pages/Transactions";
 
 const Routing: FunctionComponent<any> = () => {
   // const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Routing: FunctionComponent<any> = () => {
         <Route path="/account" element={<Account />} />
         <Route path="/mint" element={<Mint />} />
         <Route path="/:id" element={<NFTDetails />} />
+        <Route path="/transactions" element={<Transactions />} />
       </Routes>
     </BrowserRouter>
   );

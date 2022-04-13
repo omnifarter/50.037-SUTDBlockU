@@ -34,12 +34,13 @@ export type MintNFT = {
   imgHash: string;
   createdAt: string;
 };
-// export type Transaction = { //stretch goal
-//     from: string;
-//     to: string;
-//     date?: string;
-//     price: string;
-// }
+
+export type TransactionDetails = {
+  seller: string;
+  buyer: string;
+  price: number;
+  tokenId: number;
+};
 
 export const truncateAddress = (address: string) => {
   return `${address.slice(0, 7)}...${address.slice(address.length - 7)}`;
@@ -220,4 +221,8 @@ export const getNFTDetails = async (
   tokenId: string
 ) => {
   return await contract.getTokenData(tokenId);
+};
+
+export const getTransactionHistory = async (contract: ethers.Contract) => {
+  return await contract.getTransactionHistory();
 };

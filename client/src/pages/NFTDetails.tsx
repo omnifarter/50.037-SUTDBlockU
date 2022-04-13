@@ -1,5 +1,4 @@
 import { LoadingOverlay, TextInput } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 import { ethers } from "ethers";
 import { FunctionComponent, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
