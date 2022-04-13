@@ -3,8 +3,11 @@ import { create } from "ipfs-http-client";
 import { Buffer } from "buffer";
 import { PROJECT_ID, PROJECT_SECRET } from "./constants";
 import sha256 from "crypto-js/sha256";
-import Utf8 from "crypto-js/enc-utf8";
-import { showNotification } from "@mantine/notifications";
+import {
+  showNotification,
+  cleanNotifications,
+  updateNotification,
+} from "@mantine/notifications";
 import dayjs from "dayjs";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
@@ -66,21 +69,27 @@ export const mintNFT = async (
       nft.imgHash,
       date
     );
+    cleanNotifications();
     showNotification({
+      id: "load-mint",
       title: "Mint transaction is loading!",
       message: "Please be patient.",
       loading: true,
+      autoClose: false,
+      disallowClose: true,
     });
 
     contract.on(
       "Minted",
       (tokenId: number, name: string, createdAt: string) => {
-        showNotification({
+        updateNotification({
+          id: "load-mint",
           title: `${name} minted successfully!`,
           message: `Created at: ${dayjs(createdAt).format(
             "LLL"
-          )}. Token Id: ${tokenId}`,
+          )}, Token Id: ${tokenId}`,
           color: "green",
+          autoClose: 3000,
         });
         callback();
       }
@@ -128,23 +137,26 @@ export const listNFT = async (
   price: string,
   callback: () => void
 ) => {
-  //TODO: link to listNFT contract
   try {
     await contract.list(nftTokenId, ethers.utils.parseEther(price));
+    cleanNotifications();
     showNotification({
+      id: "load-list",
       title: "List transaction is loading!",
       message: "Please be patient.",
       loading: true,
+      autoClose: false,
+      disallowClose: true,
     });
     contract.on(
       "ItemListedSuccessfully",
-      (listingId: number, tokenId: number, price: number) => {
-        showNotification({
+      (tokenId: number, price: ethers.BigNumber) => {
+        updateNotification({
+          id: "load-list",
           title: `Token Id ${tokenId} listed successfully!`,
-          message: `Price: ${ethers.utils.parseEther(
-            price.toString()
-          )} Listing Id: ${listingId}`,
+          message: `Price: ${ethers.utils.formatEther(price.toString())} ETH`,
           color: "green",
+          autoClose: 3000,
         });
         callback();
       }
@@ -165,22 +177,27 @@ export const buyNFT = async (
   price: ethers.BigNumber,
   callback: () => void
 ) => {
-  //TODO: link to buyNFT contract
   const options = { value: price };
   try {
     await contract.buyItem(tokenId, options);
+    cleanNotifications();
     showNotification({
+      id: "load-buy",
       title: "Buy transaction is loading!",
       message: "Please be patient.",
       loading: true,
+      autoClose: false,
+      disallowClose: true,
     });
     contract.on("ItemBought", (seller: string, name: string, price: number) => {
-      showNotification({
+      updateNotification({
+        id: "load-buy",
         title: `${name} bought successfully!`,
-        message: `Price: ${ethers.utils.parseEther(
+        message: `Price: ${ethers.utils.formatEther(
           price.toString()
-        )} Seller: ${seller}`,
+        )} ETH, Seller: ${seller}`,
         color: "green",
+        autoClose: 3000,
       });
       callback();
     });

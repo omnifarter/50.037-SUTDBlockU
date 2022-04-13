@@ -38,6 +38,7 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
   useEffect(() => {
     console.log(price.toString());
   }, [price]);
+
   const onClickList = async () => {
     console.log(price.toString());
     await listNFT(
