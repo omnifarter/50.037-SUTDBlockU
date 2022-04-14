@@ -28,7 +28,7 @@ const Account: FunctionComponent<AccountProps> = () => {
   return (
     <div className="flex flex-col h-screen w-full items-center background">
       <Header />
-      <div style={{ width: "820px" }}>
+      <div style={{ maxWidth: "820px" }}>
       <div className="flex justify-between items-center">
         <div className="flex items-center">
             <img className="rounded-full w-14 h-14 border-gray-200 border-solid border-2 mr-2" src='https://storage.googleapis.com/opensea-static/opensea-profile/14.png' />

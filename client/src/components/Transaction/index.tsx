@@ -13,7 +13,7 @@ const Transaction: FunctionComponent<TransactionProps> = (
   props: TransactionProps
 ) => {
   return (
-    <div className="card flex px-5 py-5 w-full justify-between">
+    <div className="card flex flex-col lg:flex-row px-5 py-5 w-full justify-between">
       <div className="flex flex-col">
       <Text variant="p" className="text-xs">
         Token ID

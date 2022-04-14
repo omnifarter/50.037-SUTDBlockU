@@ -32,7 +32,7 @@ const Mint: FunctionComponent<MintProps> = () => {
     <div className="flex flex-col h-screen w-full items-center background">
       <LoadingOverlay visible={loading} />
       <Header />
-      <div style={{ width: "820px" }}>
+      <div style={{ maxWidth: "820px" }} className="mx-5 md:mx-0">
         <MintForm onSubmit={onSubmit} />
         <div className="mt-2">
           <Link to="/account">

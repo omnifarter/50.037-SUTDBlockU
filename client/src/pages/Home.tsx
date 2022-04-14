@@ -32,8 +32,8 @@ const Home: FunctionComponent<HomeProps> = () => {
         NFTs for everyone!
       </Text>
       <div
-        className="grid grid-cols-3 gap-4"
-        style={{ width: "820px" }}
+        className="grid lg:grid-cols-3 md:grid-cols-2 gap-4"
+        style={{ maxWidth: "820px" }}
       >
         {loading === false &&
           NFTs.filter((NFT: NFT) => NFT.name.toLowerCase().includes(filter)).map((NFT) => {
