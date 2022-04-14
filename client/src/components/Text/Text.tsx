@@ -6,12 +6,13 @@ interface TextProps extends React.HTMLProps<HTMLParagraphElement> {
 }
  
 const Text: FunctionComponent<TextProps> = (props: TextProps) => {
-    switch (props.variant) {
+    const {variant, black,...others} = props
+    switch (variant) {
         case "h1":
-            return (<h1 {...props} className={props.className + " text-2xl"  + (props.black ? " text-black" : " text-white")} >{props.children}</h1>)
+            return (<h1 {...others} className={props.className + " text-2xl"  + (black ? " text-black" : " text-white")} >{props.children}</h1>)
     
         case "p":
-            return (<p {...props} className={props.className + (props.black ? " text-black" : " text-white")}>{props.children}</p>)
+            return (<p {...others} className={props.className + (black ? " text-black" : " text-white")}>{props.children}</p>)
     }
     ;
 }

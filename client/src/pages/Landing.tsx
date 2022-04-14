@@ -8,9 +8,7 @@ interface LandingProps {
 }
  
 const Landing: FunctionComponent<LandingProps> = () => {
-
     const contextData = useContext(Context)
-
     const navigate = useNavigate()
     useEffect(()=>{
         contextData.metaAddress && navigate('/')

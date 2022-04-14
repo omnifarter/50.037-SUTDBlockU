@@ -9,8 +9,9 @@ import Mint from "./pages/Mint";
 import NFTDetails from "./pages/NFTDetails";
 import Transactions from "./pages/Transactions";
 
-const ProtectedRoute = ({ isSignedIn , children }:any) => {
-  if (!isSignedIn) {
+const ProtectedRoute = ({ children }:any) => {
+  const isSignedIn = localStorage.getItem("hasMetaMask")
+  if (isSignedIn!=='true') {
     return <Navigate to="/landing" replace />;
   }
 
@@ -25,27 +26,27 @@ const Routing: FunctionComponent<any> = () => {
       <Routes>
         <Route path='landing' element={ <Landing /> } />
         <Route index element={
-          <ProtectedRoute isSignedIn={contractData.metaAddress}>
+          <ProtectedRoute>
             <Home />
           </ProtectedRoute>
         } />
         <Route path="/account" element={
-          <ProtectedRoute isSignedIn={contractData.metaAddress}>
+          <ProtectedRoute>
             <Account />
           </ProtectedRoute>
         } />
         <Route path="/mint" element={
-        <ProtectedRoute isSignedIn={contractData.metaAddress}>
+        <ProtectedRoute>
           <Mint />
         </ProtectedRoute>
         } />
         <Route path="/:id" element={
-        <ProtectedRoute isSignedIn={contractData.metaAddress}>
+        <ProtectedRoute>
           <NFTDetails />
         </ProtectedRoute>
         } />
         <Route path="/transactions" element={
-          <ProtectedRoute isSignedIn={contractData.metaAddress}>
+          <ProtectedRoute>
             <Transactions />
           </ProtectedRoute>
         } />

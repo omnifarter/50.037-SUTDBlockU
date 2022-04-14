@@ -36,7 +36,7 @@ const Home: FunctionComponent<HomeProps> = () => {
         style={{ width: "820px" }}
       >
         {loading === false &&
-          NFTs.filter((NFT: NFT) => NFT.name.includes(filter)).map((NFT) => {
+          NFTs.filter((NFT: NFT) => NFT.name.toLowerCase().includes(filter)).map((NFT) => {
             return <NFTHomeCard NFT={NFT} key={NFT.id} />;
           })}
       </div>
