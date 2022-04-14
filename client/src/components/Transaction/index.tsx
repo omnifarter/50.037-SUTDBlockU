@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import { truncateAddress } from "../../helpers/api";
 import Text from "../Text/Text";
 
 interface TransactionProps {
@@ -12,24 +13,31 @@ const Transaction: FunctionComponent<TransactionProps> = (
   props: TransactionProps
 ) => {
   return (
-    <div className="card px-5 py-5 w-full">
-      <Text variant="p" className="font-bold text-xs">
+    <div className="card flex px-5 py-5 w-full justify-between">
+      <div className="flex flex-col">
+      <Text variant="p" className="text-xs">
         Token ID
       </Text>
       <Text variant="p">{props.tokenId}</Text>
-      <Text variant="p" className="font-bold text-xs">
+      </div>
+      <div className="flex flex-col">
+      <Text variant="p" className="text-xs">
         Seller
       </Text>
-      <Text variant="p">{props.seller}</Text>
-      <Text variant="p" className="font-bold text-xs">
+      <Text variant="p">{truncateAddress(props.seller)}</Text>
+      </div>
+      <div className="flex flex-col">
+      <Text variant="p" className="text-xs">
         Buyer
       </Text>
-      <Text variant="p">{props.buyer}</Text>
-
-      <Text variant="p" className="font-bold text-xs">
+      <Text variant="p">{truncateAddress(props.buyer)}</Text>
+      </div>
+      <div className="flex flex-col">
+      <Text variant="p" className="text-xs">
         Price
       </Text>
       <Text variant="p">{`${props.price} ETH`}</Text>
+      </div>
     </div>
   );
 };

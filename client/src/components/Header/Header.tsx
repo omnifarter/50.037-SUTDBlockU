@@ -48,24 +48,25 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
 
         {props.setFilter ? (
           <input
-            className="w-3/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2"
+            className="w-5/12 flex justify-center border-2 rounded-md h-full focus:outline-none focus:border-blue-300 p-2"
             placeholder="Search..."
             onChange={(e) => props.setFilter && props.setFilter(e.target.value)}
           />
         ) : null}
 
-        {location.pathname !== "/transactions" ? (
-          <Link to="/transactions" className="flex row">
-            <Button>Transactions</Button>
-          </Link>
-        ) : null}
+        <div className="flex items-center">
+          {location.pathname !== "/transactions" ? (
+            <Link to="/transactions" className="flex row mr-10">
+              <Text variant="p">Transactions</Text>
+            </Link>
+          ) : null}
 
-        <Link to="/account">
-          <Button>
-            {truncateAddress(contractData.metaAddress as string) ||
-              "My Account"}
-          </Button>
-        </Link>
+          <Link to="/account">
+            <img src='https://storage.googleapis.com/opensea-static/opensea-profile/14.png'
+            className="rounded-full w-12 h-12"
+            />
+          </Link>
+        </div>
       </div>
       <div
         className={"flex-col flex w-full px-10" + (!isMobile ? " hidden" : "")}

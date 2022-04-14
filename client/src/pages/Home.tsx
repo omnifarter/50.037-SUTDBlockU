@@ -16,7 +16,6 @@ const Home: FunctionComponent<HomeProps> = () => {
     const allNFTs = await getListedNFTs(
       contextData.uniTokenContract as ethers.Contract
     );
-    console.log(allNFTs);
     setNFTs(allNFTs);
     setLoading(false);
   };
