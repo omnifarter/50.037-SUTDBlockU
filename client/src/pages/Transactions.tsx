@@ -28,8 +28,8 @@ const Transactions: FunctionComponent<TransactionProps> = () => {
   return (
     <div className="flex flex-col h-screen w-full items-center background">
       <Header />
-      <LoadingOverlay visible={loading} />
-      <div className="flex flex-col w-full" style={{ maxWidth: "820px" }}>
+      <LoadingOverlay visible={loading} style={{position:'fixed',top:'0',right:'0',bottom:'0',left:'0'}} />
+      <div className="flex flex-col w-full px-5 lg:px-0" style={{ maxWidth: "820px" }}>
         {transactions.map((tx: TransactionDetails) => {
           return (
             <Transaction

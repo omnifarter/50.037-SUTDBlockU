@@ -87,6 +87,9 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
             <Link to="/">
               <Text variant="p">Home</Text>
             </Link>
+            <Link to="/transactions">
+              <Text variant="p">Transactions</Text>
+            </Link>
             <Link to="/account">
               <Text variant="p">Account</Text>
             </Link>

@@ -65,9 +65,9 @@ const NFTDetails: FunctionComponent<NFTDetailsProps> = (props) => {
   };
 
   return (
-    <div className="flex flex-col items-center h-screen w-full background">
+    <div className="flex flex-col items-center w-full background">
+      <LoadingOverlay visible={loading} style={{position:'fixed',top:'0',right:'0',bottom:'0',left:'0'}} />
       <Header />
-      <LoadingOverlay visible={loading} />
       <div style={{ maxWidth: "820px" }} className="mx-5 lg:mx-0" >
         <Text variant="h1" className="py-4">
           {NFT?.name}
