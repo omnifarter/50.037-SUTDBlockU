@@ -13,4 +13,5 @@
     background-size: cover;
     height: auto;
     min-height: 100vh;
+    padding-bottom: 16px;
   }
