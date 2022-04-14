@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { UNI_TOKEN_ADDRESS } from "./constants";
 //@ts-ignore
 import UniToken from "../abis/UniToken.json";
+import { useNavigate } from "react-router-dom";
 
 type ContextData = {
   metaAddress?: string;

@@ -32,7 +32,7 @@ const Home: FunctionComponent<HomeProps> = () => {
         NFTs for everyone!
       </Text>
       <div
-        className="flex flex-wrap flex-row self-center justify-between"
+        className="grid grid-cols-3 gap-4"
         style={{ width: "820px" }}
       >
         {loading === false &&
