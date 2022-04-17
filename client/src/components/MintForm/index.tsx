@@ -23,15 +23,12 @@ const MintForm: FunctionComponent<MintFormProps> = (props:MintFormProps) => {
 
     const onSubmit = async (nft: MintNFT) => {
         const onComplete = (ipfsPath:string, imageHash:string) => {
-            console.log('this is the onSubmit NFT',nft)
             let nftCopy = JSON.parse(JSON.stringify(nft));
             nftCopy.imgUrl = ipfsPath
             nftCopy.imgHash = imageHash
             props.onSubmit(nftCopy)
         }
-        await uploadToIPFS(imgFile as File,onComplete)
-
-        // props.onSubmit(nft)
+        await uploadToIPFS(imgFile as File, onComplete)
     }
     return (
         <Form
